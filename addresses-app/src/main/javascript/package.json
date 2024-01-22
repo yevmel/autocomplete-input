@@ -1,0 +1,8 @@
+{
+   "scripts": {
+      "esbuild:watch": "esbuild ./script.js --watch --bundle --outfile=../resources/public/script.js"
+   },
+   "devDependencies": {
+      "esbuild": "^0.19.11"
+   }
+}

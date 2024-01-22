@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.autocomplete {
+   @apply relative
+}
+
+.text-input {
+   @apply flex shadow rounded
+}
+
+.text-input .actions {
+   @apply flex items-stretch
+}
+
+.text-input .actions button {
+   @apply relative -ml-px inline-flex items-center gap-x-1.5 px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 hover:bg-gray-50
+}
+
+.text-input .actions button:last-child {
+   @apply rounded-r
+}
+
+.text-input .actions button.danger {
+   @apply text-red-500
+}
+
+.text-input .actions button.success {
+   @apply text-lime-500
+}
+
+.text-input .actions button svg {
+   @apply w-5 h-5
+}
+
+.text-input .input-group {
+   @apply items-center flex gap-4 rounded-l flex-grow focus-within:z-10 focus-within:ring-2 focus-within:ring-indigo-600 pl-3 pr-1 py-2 ring-1 ring-inset ring-gray-300
+}
+
+.text-input .input-group > div {
+   @apply w-full;
+}
+
+.text-input label {
+   @apply block text-xs font-medium text-gray-900;
+}
+
+.text-input input[type=text] {
+   @apply block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6
+}
+
+.suggestions {
+   @apply overflow-hidden shadow-lg ring-1 ring-black ring-opacity-5 sm:rounded-lg absolute mt-2 w-full
+}
+
+.suggestions table {
+   @apply min-w-full divide-y divide-gray-300
+}
+
+.suggestions table thead {
+   @apply bg-gray-50
+}
+
+.suggestions table thead th {
+   @apply px-3 py-3.5 text-left text-sm font-semibold text-gray-900
+}
+
+.suggestions table tbody {
+   @apply divide-y divide-gray-200 bg-white;
+   max-height: 150px;
+}
+
+.suggestions table tbody tr:hover, .suggestions table tbody tr.selected {
+   @apply bg-gray-200
+}
+
+.suggestions table tbody td {
+   @apply whitespace-nowrap px-3 py-4 text-sm text-gray-500
+}
