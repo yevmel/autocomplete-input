@@ -50,15 +50,13 @@ async function setupSuggestionsHtml(response) {
 
    if ('application/json' === contentType) {
       const addresses = await response.json();
-      return setupSuggestionsHtmlFromAddresses(addresses)
-   } else if ('text/html' === contentType) {
-      return await response.text()
+      return setupSuggestionsHtmlFromJson(addresses)
    }
 
    throw Error('can not handle content type: ' + contentType)
 }
 
-function setupSuggestionsHtmlFromAddresses(addresses) {
+function setupSuggestionsHtmlFromJson(addresses) {
    const rows = addresses.length === 0 ? `<tr><td colspan="999">no suggestions for you ¯\\_(ツ)_/¯</td></tr>` : addresses.map(address => `
       <tr data-autocomplete-suggestion="${address.id}" 
           data-autocomplete-suggestion-text="${address.firstname} ${address.lastname}, ${address.city}, ${address.street}">
@@ -157,7 +155,6 @@ function setupSuggestionsHtmlFromAddresses(addresses) {
       }
 
       const filter = event.target.value
-      const suggestionsContentType = event.target.dataset.suggestionsContentType || 'text/html'
       const suggestionsUrl = suggestionsBaseUrl.includes("?") ?
          `${suggestionsBaseUrl}&filter=${filter}` : `${suggestionsBaseUrl}?filter=${filter}`
 
@@ -169,7 +166,7 @@ function setupSuggestionsHtmlFromAddresses(addresses) {
       abortController = new AbortController()
 
       fetch(suggestionsUrl, {
-         headers: { "Accept": suggestionsContentType },
+         headers: { "Accept": "application/json" },
          signal: abortController.signal
       }).then(async response => {
          const html = await setupSuggestionsHtml(response)

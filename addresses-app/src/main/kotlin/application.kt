@@ -57,8 +57,8 @@ private fun handleIndexGet(ctx: Context) {
    ctx.html(
       renderPage("""
          <div class="flex lg:flex-row flex-col gap-6 py-8 px-6">
-            ${renderCard("Autocomplete, receiving HTML", renderAutocomplete(label = "Search Address (html)", suggestionsContentType = "text/html"))}
-            ${renderCard("Autocomplete, receiving JSON", renderAutocomplete(label = "Search Address (json)", suggestionsContentType = "application/json"))}
+            ${renderCard("Autocomplete #1", renderAutocomplete(label = "Search Address"))}
+            ${renderCard("Autocomplete #2", renderAutocomplete(label = "Search Address"))}
          </div>
       """.trimIndent())
    )
@@ -68,9 +68,6 @@ private fun handleAddressesGet(ctx: Context) {
    val filter = ctx.queryParam("filter") ?: ""
    val limit = ctx.queryParam("limit")?.toInt() ?: 5
    val addresses = AddressRepository.findAddresses(filter, limit)
-   val accept = ctx.header("Accept")
-   when (accept) {
-      ContentType.JSON -> ctx.json(addresses)
-      else -> ctx.html(renderAutocompleteSuggestions(addresses))
-   }
+
+   ctx.json(addresses)
 }

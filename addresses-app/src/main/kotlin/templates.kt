@@ -20,8 +20,7 @@ fun renderPage(
 """.trimIndent()
 
 fun renderAutocomplete(
-   label: String = "Search Address",
-   suggestionsContentType: String = "text/html"
+   label: String = "Search Address"
 ): String = """
    <div class="autocomplete">
       <div class="text-input">
@@ -29,8 +28,7 @@ fun renderAutocomplete(
             <div>
                <label for="name">${label}</label>
                <input type="text" id="name" placeholder="John Doe" class="autocomplete-text" 
-                  data-suggestions-url="/addresses"
-                  data-suggestions-content-type="${suggestionsContentType}">
+                  data-suggestions-url="/addresses">
                <input type="hidden" class="autocomplete-value">
             </div>
          </div>
