@@ -26,8 +26,6 @@ fun renderAutocomplete(
    <div class="autocomplete">
       <div class="text-input">
          <div class="input-group">
-            <!-- an icon or something similar can be places here -->
-   
             <div>
                <label for="name">${label}</label>
                <input type="text" id="name" placeholder="John Doe" class="autocomplete-text" 
@@ -35,20 +33,6 @@ fun renderAutocomplete(
                   data-suggestions-content-type="${suggestionsContentType}">
                <input type="hidden" class="autocomplete-value">
             </div>
-         </div>
-   
-         <div class="actions">
-            <button type="button" class="success">
-               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-               </svg>
-            </button>
-   
-            <button type="button" class="danger">
-               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
-               </svg>
-            </button>
          </div>
       </div>
    </div>
