@@ -87,102 +87,103 @@ function setupSuggestionsHtmlFromAddresses(addresses) {
    `
 }
 
-(function setupAutocomplete(root = document) {
-      let abortController
+(function setupAutocomplete(
+   root = document
+) {
+   let abortController
 
-      root.addEventListener("focusout", withClosestElement(".autocomplete", function(event, autocompleteContainer) {
-         if (abortController) {
-            abortController.abort()
-            abortController = null
+   root.addEventListener("focusout", withClosestElement(".autocomplete", function(event, autocompleteContainer) {
+      if (abortController) {
+         abortController.abort()
+         abortController = null
+      }
+
+      restoreCurrentText(event.target)
+
+      const suggestions = autocompleteContainer.querySelector('.suggestions')
+      if (suggestions) {
+         suggestions.remove()
+      }
+   }))
+
+   root.addEventListener("mousedown", withClosestElement("[data-autocomplete-suggestion]", function(event, suggestion) {
+      const autocompleteContainer = suggestion.closest('.autocomplete')
+      applySuggestion(autocompleteContainer, suggestion)
+   }))
+
+   root.addEventListener('keydown', withClosestElement(".autocomplete", function(event, autocompleteContainerEl) {
+      const suggestionsContainer = autocompleteContainerEl.querySelector('.suggestions')
+      if (!suggestionsContainer) {
+         return
+      }
+
+      if (["ArrowDown", "ArrowUp"].indexOf(event.key) > -1) {
+         event.preventDefault()
+
+         const suggestions = Array.from(suggestionsContainer.querySelectorAll('[data-autocomplete-suggestion]'))
+         const selectedIdx = suggestions.findIndex(el => el.matches('.selected'))
+
+         if ("ArrowDown" === event.key) {
+            if (selectedIdx === -1) {
+               suggestions[0].classList.add('selected')
+            } else if (selectedIdx < (suggestions.length - 1)) {
+               suggestions[selectedIdx].classList.remove('selected')
+               suggestions[selectedIdx + 1].classList.add('selected')
+            }
+         } else if ("ArrowUp" === event.key) {
+            if (selectedIdx === -1) {
+               suggestions[suggestions.length - 1].classList.add('selected')
+            } else if (selectedIdx > 0) {
+               suggestions[selectedIdx].classList.remove('selected')
+               suggestions[selectedIdx - 1].classList.add('selected')
+            }
          }
-
+      } else if ("Escape" === event.key) {
+         suggestionsContainer.remove()
          restoreCurrentText(event.target)
-
-         const suggestions = autocompleteContainer.querySelector('.suggestions')
-         if (suggestions) {
-            suggestions.remove()
-         }
-      }))
-
-      root.addEventListener("mousedown", withClosestElement("[data-autocomplete-suggestion]", function(event, suggestion) {
-         const autocompleteContainer = suggestion.closest('.autocomplete')
-         applySuggestion(autocompleteContainer, suggestion)
-      }))
-
-      root.addEventListener('keydown', withClosestElement(".autocomplete", function(event, autocompleteContainerEl) {
-         const suggestionsContainer = autocompleteContainerEl.querySelector('.suggestions')
-         if (!suggestionsContainer) {
-            return
-         }
-
-         if (["ArrowDown", "ArrowUp"].indexOf(event.key) > -1) {
-            event.preventDefault()
-
-            const suggestions = Array.from(suggestionsContainer.querySelectorAll('[data-autocomplete-suggestion]'))
-            const selectedIdx = suggestions.findIndex(el => el.matches('.selected'))
-
-            if ("ArrowDown" === event.key) {
-               if (selectedIdx === -1) {
-                  suggestions[0].classList.add('selected')
-               } else if (selectedIdx < (suggestions.length - 1)) {
-                  suggestions[selectedIdx].classList.remove('selected')
-                  suggestions[selectedIdx + 1].classList.add('selected')
-               }
-            } else if ("ArrowUp" === event.key) {
-               if (selectedIdx === -1) {
-                  suggestions[suggestions.length - 1].classList.add('selected')
-               } else if (selectedIdx > 0) {
-                  suggestions[selectedIdx].classList.remove('selected')
-                  suggestions[selectedIdx - 1].classList.add('selected')
-               }
-            }
-         } else if ("Escape" === event.key) {
+      } else if ("Enter" === event.key) {
+         const selectedSuggestionEl = suggestionsContainer.querySelector('.selected')
+         if (selectedSuggestionEl) {
+            applySuggestion(autocompleteContainerEl, selectedSuggestionEl)
             suggestionsContainer.remove()
-            restoreCurrentText(event.target)
-         } else if ("Enter" === event.key) {
-            const selectedSuggestionEl = suggestionsContainer.querySelector('.selected')
-            if (selectedSuggestionEl) {
-               applySuggestion(autocompleteContainerEl, selectedSuggestionEl)
-               suggestionsContainer.remove()
-            }
          }
-      }))
+      }
+   }))
 
-      root.addEventListener('input', debounce(event => {
-         const suggestionsBaseUrl = event.target.dataset.suggestionsUrl
-         if (suggestionsBaseUrl === undefined) {
-            return
+   root.addEventListener('input', debounce(event => {
+      const suggestionsBaseUrl = event.target.dataset.suggestionsUrl
+      if (suggestionsBaseUrl === undefined) {
+         return
+      }
+
+      const filter = event.target.value
+      const suggestionsContentType = event.target.dataset.suggestionsContentType || 'text/html'
+      const suggestionsUrl = suggestionsBaseUrl.includes("?") ?
+         `${suggestionsBaseUrl}&filter=${filter}` : `${suggestionsBaseUrl}?filter=${filter}`
+
+      if (abortController) {
+         abortController.abort()
+         abortController = null
+      }
+
+      abortController = new AbortController()
+
+      fetch(suggestionsUrl, {
+         headers: { "Accept": suggestionsContentType },
+         signal: abortController.signal
+      }).then(async response => {
+         const html = await setupSuggestionsHtml(response)
+         const autocompleteContainer = event.target.closest('.autocomplete')
+
+         const existingSuggestions = autocompleteContainer.querySelector('.suggestions')
+         if (existingSuggestions) {
+            existingSuggestions.remove()
          }
 
-         const filter = event.target.value
-         const suggestionsContentType = event.target.dataset.suggestionsContentType || 'text/html'
-         const suggestionsUrl = suggestionsBaseUrl.includes("?") ?
-            `${suggestionsBaseUrl}&filter=${filter}` : `${suggestionsBaseUrl}?filter=${filter}`
+         const temp = document.createElement("div");
+         temp.innerHTML = html
 
-         if (abortController) {
-            abortController.abort()
-            abortController = null
-         }
-
-         abortController = new AbortController()
-
-         fetch(suggestionsUrl, {
-            headers: { "Accept": suggestionsContentType },
-            signal: abortController.signal
-         }).then(async response => {
-            const html = await setupSuggestionsHtml(response)
-            const autocompleteContainer = event.target.closest('.autocomplete')
-
-            const existingSuggestions = autocompleteContainer.querySelector('.suggestions')
-            if (existingSuggestions) {
-               existingSuggestions.remove()
-            }
-
-            const temp = document.createElement("div");
-            temp.innerHTML = html
-
-            autocompleteContainer.appendChild(temp.firstElementChild)
-         })
-      }))
-   }
-)()
+         autocompleteContainer.appendChild(temp.firstElementChild)
+      })
+   }))
+})()
