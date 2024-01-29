@@ -28,8 +28,8 @@ fun main() {
          it.location = Location.CLASSPATH
       }
 
-      it.plugins.enableCors {
-         it.add {
+      it.bundledPlugins.enableCors {
+         it.addRule {
             it.anyHost()
          }
       }
