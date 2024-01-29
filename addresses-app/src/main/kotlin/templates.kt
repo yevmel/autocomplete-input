@@ -14,9 +14,7 @@ fun renderPage(
       <script src="${staticFilesBaseURL}/script.js"></script>
    </head>
    <body class="bg-gray-50">
-      <div class=" flex gap-4 justify-center py-8">
-         ${content}
-      </div>
+      ${content}
    </body>
    </html>
 """.trimIndent()
@@ -25,7 +23,7 @@ fun renderAutocomplete(
    label: String = "Search Address",
    suggestionsContentType: String = "text/html"
 ): String = """
-   <div class="autocomplete" style="width: 500px">
+   <div class="autocomplete">
       <div class="text-input">
          <div class="input-group">
             <!-- an icon or something similar can be places here -->
@@ -83,7 +81,7 @@ fun renderCard(
    heading: String,
    content: String
 ): String = """
-   <div class="p-6 bg-white shadow rounded-lg flex flex-col gap-6">
+   <div class="p-6 bg-white shadow rounded-lg flex flex-col gap-6 w-full">
       <h3 class="truncate text-sm font-medium text-gray-900">${heading}</h3>
       <div>${content}</div>
    </div>

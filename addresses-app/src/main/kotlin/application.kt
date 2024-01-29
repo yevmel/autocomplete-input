@@ -56,8 +56,10 @@ private fun  Javalin.setupErrorHandler() {
 private fun handleIndexGet(ctx: Context) {
    ctx.html(
       renderPage("""
-         ${renderCard("Autocomplete, receiving HTML", renderAutocomplete(label = "Search Address (html)", suggestionsContentType = "text/html"))}
-         ${renderCard("Autocomplete, receiving JSON", renderAutocomplete(label = "Search Address (json)", suggestionsContentType = "application/json"))}
+         <div class="flex lg:flex-row flex-col gap-6 py-8 px-6">
+            ${renderCard("Autocomplete, receiving HTML", renderAutocomplete(label = "Search Address (html)", suggestionsContentType = "text/html"))}
+            ${renderCard("Autocomplete, receiving JSON", renderAutocomplete(label = "Search Address (json)", suggestionsContentType = "application/json"))}
+         </div>
       """.trimIndent())
    )
 }
