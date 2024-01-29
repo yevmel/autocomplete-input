@@ -42,3 +42,7 @@ jib {
       }
    }
 }
+
+tasks.withType(Wrapper::class) {
+   gradleVersion = "8.5"
+}
