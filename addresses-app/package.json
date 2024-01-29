@@ -1,5 +1,5 @@
 {
    "scripts": {
-      "http:": "http-server -c-1 ./src/main/resources/public"
+      "http": "http-server -c-1 ./src/main/resources/public"
    }
 }
