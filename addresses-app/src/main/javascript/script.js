@@ -91,6 +91,11 @@ function setupSuggestionsHtmlFromAddresses(addresses) {
       let abortController
 
       root.addEventListener("focusout", withClosestElement(".autocomplete", function(event, autocompleteContainer) {
+         if (abortController) {
+            abortController.abort()
+            abortController = null
+         }
+
          restoreCurrentText(event.target)
 
          const suggestions = autocompleteContainer.querySelector('.suggestions')
@@ -156,6 +161,7 @@ function setupSuggestionsHtmlFromAddresses(addresses) {
 
          if (abortController) {
             abortController.abort()
+            abortController = null
          }
 
          abortController = new AbortController()
